@@ -1,0 +1,10 @@
+import { launch } from "./browser.mjs";
+const b = await launch();
+const ctx = await b.newContext({ viewport: { width: +process.argv[2], height: +process.argv[3] }, deviceScaleFactor: 2 });
+const p = await ctx.newPage();
+await p.goto("http://localhost:8787/");
+await p.evaluate((n) => { const q = {}; for (let i = 1; i < n; i++) q[i] = true; localStorage.setItem("lgql-save-v1", JSON.stringify({ q })); }, +process.argv[4]);
+await p.goto("http://localhost:8787/"); await p.waitForTimeout(300);
+console.log(await p.evaluate(() => { const c = document.querySelector("#hud .qcard"), s = document.querySelector("#hud .qsteps"); return { card: [c.scrollHeight, c.clientHeight], steps: [s.scrollHeight, s.clientHeight] }; }));
+await p.screenshot({ path: `tests/shots/measure-${process.argv[2]}x${process.argv[3]}-q${process.argv[4]}.png` });
+await b.close();

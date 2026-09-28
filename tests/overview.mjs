@@ -1,0 +1,18 @@
+import { launch } from "./browser.mjs";
+const b = await launch();
+const ctx = await b.newContext({ viewport: { width: 1000, height: 940 }, deviceScaleFactor: 2 });
+const p = await ctx.newPage();
+const errs = [];
+p.on("pageerror", (e) => errs.push(e.message));
+const q = {}; for (let i = 1; i <= 22; i++) q[i] = true;
+await p.addInitScript((q) => localStorage.setItem("lgql-save-v1", JSON.stringify({ q, panelOpen: false, legendOpen: false, motion: "reduced" })), q);
+await p.goto("http://localhost:8787/");
+await p.waitForTimeout(900);
+await p.evaluate(() => { const m = window.__lgql.map; m.cam.z = m.zMin; m.clamp(); });
+await p.waitForTimeout(300);
+await p.screenshot({ path: "tests/shots/overview-kanto.png" });
+await p.evaluate(() => { const m = window.__lgql.map; m.setRegion("sevii"); m.cam.z = m.zMin; m.clamp(); });
+await p.waitForTimeout(300);
+await p.screenshot({ path: "tests/shots/overview-sevii.png" });
+console.log(errs.join("\n") || "no errors");
+await b.close();

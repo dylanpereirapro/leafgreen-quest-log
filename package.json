@@ -1,0 +1,13 @@
+{
+  "name": "leafgreen-quest-log",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python3 -m http.server 8787",
+    "test": "node tests/run.mjs",
+    "icons": "python3 tests/make_icons.py"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

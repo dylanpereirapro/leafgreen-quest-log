@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#1c2438">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="A game-style quest log and map for Pokémon LeafGreen. Folded: quest HUD. Unfolded: world map.">
+<title>LeafGreen Quest Log</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="preload" href="fonts/press-start-2p.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<script type="module" src="js/main.js"></script>
+</head>
+<body>
+<div id="app" data-mode="hud">
+
+  <!-- QUEST HUD: cover screen and split screen -->
+  <main id="hud" aria-label="Quest HUD">
+    <header class="topbar">
+      <button class="pxbtn start" data-act="menu" aria-haspopup="menu">START</button>
+      <div class="brand"><span class="brand-t">QUEST LOG</span><span class="brand-s">STORY <b data-bind="storyCount">0/23</b></span></div>
+      <button class="pxbtn mute off" data-act="mute" aria-pressed="false" aria-label="Sound off"><span class="spk" aria-hidden="true"></span></button>
+    </header>
+    <div class="storybar" aria-hidden="true"><i data-bind="storyBar"></i></div>
+    <article class="qcard" data-card="hud" aria-live="polite"></article>
+    <section class="badgecase" data-badges="hud" aria-label="Badge case"></section>
+    <section class="dexrow" data-dex="hud" aria-label="Pokédex counter"></section>
+  </main>
+
+  <!-- WORLD MAP: unfolded inner screen -->
+  <section id="world" aria-label="World map">
+    <canvas id="map" tabindex="0" aria-label="Map. Drag to pan, pinch or scroll to zoom, tap a marker for details."></canvas>
+    <div class="region-plate" data-bind="regionName">KANTO</div>
+    <div class="map-top">
+      <button class="pxbtn back" data-act="closeMap" aria-label="Back to quest HUD">◀ BACK</button>
+      <button class="pxbtn start" data-act="menu" aria-haspopup="menu">START</button>
+      <button class="pxbtn mute off" data-act="mute" aria-pressed="false" aria-label="Sound off"><span class="spk" aria-hidden="true"></span></button>
+    </div>
+    <div class="legend" data-legend>
+      <button class="legend-h" data-act="legend" aria-label="Show or hide the legend">LEGEND</button>
+      <div class="legend-b">
+        <button class="flt" data-filter="story" aria-pressed="true"><i class="ico" data-icon="town" aria-hidden="true"></i>STORY</button>
+        <button class="flt" data-filter="legend" aria-pressed="true"><i class="ico" data-icon="legend" aria-hidden="true"></i>LEGENDS</button>
+        <button class="flt" data-filter="items" aria-pressed="true"><i class="ico" data-icon="item" aria-hidden="true"></i>ITEMS</button>
+        <button class="flt" data-filter="gifts" aria-pressed="true"><i class="ico" data-icon="gift" aria-hidden="true"></i>GIFTS</button>
+        <p class="legend-k"><span class="bang">!</span> next quest · <i class="ico" data-icon="check" aria-hidden="true"></i> done · <i class="ico" data-icon="unknown" aria-hidden="true"></i> not reached · dots = surf route</p>
+      </div>
+    </div>
+    <div class="maptools">
+      <button class="pxbtn" data-act="me" aria-label="Center on me">◎ ME</button>
+      <button class="pxbtn sq" data-act="zin" aria-label="Zoom in">+</button>
+      <button class="pxbtn sq" data-act="zout" aria-label="Zoom out">-</button>
+      <button class="pxbtn ferry" data-act="ferry">SEVII ▶</button>
+    </div>
+    <aside id="panel" aria-label="Quest log">
+      <button class="panel-tab" data-act="panel" aria-label="Show or hide the quest log">LOG</button>
+      <div class="panel-in">
+        <article class="qcard" data-card="panel"></article>
+        <section class="badgecase" data-badges="panel" aria-label="Badge case"></section>
+        <section class="dexrow" data-dex="panel" aria-label="Pokédex counter"></section>
+        <h3 class="panel-h">QUEST LOG <span class="n" data-bind="storyCount">0/23</span></h3>
+        <div class="qlist" data-qlist="panel"></div>
+      </div>
+    </aside>
+    <div id="textbox" hidden role="dialog" aria-live="polite" aria-label="Location details">
+      <div class="tb-in">
+        <p class="tb-title"></p>
+        <div class="tb-lines"></div>
+        <span class="tb-count"></span><span class="tb-arrow" aria-hidden="true">▼</span>
+      </div>
+      <button class="tb-x" aria-label="Close">✕</button>
+    </div>
+  </section>
+
+  <!-- START menu -->
+  <div id="menu" role="menu" hidden>
+    <span class="cursor" aria-hidden="true"></span>
+    <button role="menuitem" data-go="map">MAP</button>
+    <button role="menuitem" data-go="quests">QUESTS</button>
+    <button role="menuitem" data-go="collection">COLLECTION</button>
+    <button role="menuitem" data-go="dex">POKéDEX</button>
+    <button role="menuitem" data-go="options">OPTIONS</button>
+    <button role="menuitem" data-go="close">EXIT</button>
+  </div>
+
+  <section id="screen" role="dialog" aria-modal="true" hidden>
+    <header class="scr-head"><button class="pxbtn scr-back" data-act="closeScreen">◀ B</button><h2 class="scr-title"></h2></header>
+    <div class="scr-body"></div>
+  </section>
+
+  <div id="banner" hidden role="alert">
+    <div class="bn-box">
+      <img class="bn-badge" alt="" hidden>
+      <p class="bn-head"></p>
+      <p class="bn-line"></p>
+    </div>
+  </div>
+  <div id="flash" aria-hidden="true"></div>
+  <div id="wipe" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div id="toast" role="status"></div>
+</div>
+<noscript><p style="color:#fff;padding:20px;font-family:sans-serif">This app needs JavaScript turned on.</p></noscript>
+</body>
+</html>
