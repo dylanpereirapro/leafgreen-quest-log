@@ -1,5 +1,5 @@
 // Offline support: precache the whole app, serve from cache first, refresh the cache in the background.
-const VERSION = "lgql-v1";
+const VERSION = "lgql-v2";
 const FILES = [
   "./", "index.html", "manifest.webmanifest", "css/style.css",
   "js/main.js", "js/ui.js", "js/map.js", "js/world.js", "js/art.js", "js/audio.js", "js/state.js", "js/data.js",
